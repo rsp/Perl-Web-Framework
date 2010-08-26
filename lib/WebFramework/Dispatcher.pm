@@ -16,8 +16,10 @@ sub dispatcher {
     return WebFramework::Controller::CGI::wrapper(sub {
         my ($request) = @_;
 
+        my ($path) = split(qr{\?}, $ENV{REQUEST_URI});
+
         for my $route (@{$routes}) {
-            if ((defined($route->{path})   ? $ENV{PATH_INFO} =~ $route->{path}                : 1) &&
+            if ((defined($route->{path})   ? $path =~ $route->{path}                : 1) &&
                 (defined($route->{method}) ? uc($ENV{REQUEST_METHOD}) =~ $route->{method}     : 1)) {
                 return $route->{controller}->($request); # pass original request on to delegate controller
             }

@@ -24,7 +24,7 @@ sub _after {
     my $tt_config = {};
 
     foreach my $k (keys(%ENV)) {
-        if ($k =~ m/^TT\.(.*)$/) { # $1 will hold the grouped part at the end of the match
+        if ($k =~ m/^TT_(.*)$/) { # $1 will hold the grouped part at the end of the match
             $tt_config->{$1} = $ENV{$k};
         }
     }
@@ -41,7 +41,10 @@ sub _after {
     my $tt = Template->new($tt_config);
     my $stash = defined($response->{stash}) ? $response->{stash} : {};
     my $template_result;
-    $tt->process($response->{template}, $stash, \$template_result);
+    my $process_response_value = $tt->process($response->{template}, $stash, \$template_result);
+    if (!(defined($process_response_value))) {
+        die $tt->error();
+    }
     $response->{body} = $template_result;
 
     if (!(defined($response->{headers}->{'Content-Type'}))) {

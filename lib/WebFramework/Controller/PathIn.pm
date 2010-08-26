@@ -13,8 +13,10 @@ use WebFramework::Utils::Request ();
 sub _before {
     my ($request) = @_;
 
-    if ($ENV{PATH_INFO}) {
-        $request->{path} = $ENV{PATH_INFO};
+
+    if ($ENV{REQUEST_URI}) {
+        my ($path) = split(qr{\?}, $ENV{REQUEST_URI});
+        $request->{path} = $path;
     }
     return $request;
 }
